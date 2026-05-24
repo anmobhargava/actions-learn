@@ -20,7 +20,7 @@ class Body(BaseModel):
 
 @app.get("/") 
 def welcome():
-    return {"message": "Welcome to ChatGPT AI Application V2 Versions"}
+    return {"message": "Welcome to ChatGPT AI Application V2 Versionssss"}
 
 @app.get("/home") 
 def welcome():
