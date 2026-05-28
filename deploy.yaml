@@ -1,29 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chatgpt-deploy
+  name: gpt-deploy
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: chatgpt-pod
+      app: gpt-pod
   template:
     metadata:
       labels:
-        app: chatgpt-pod
+        app: gpt-pod
     spec:
       containers:
-      - name: mychatgptcontainer
+      - name: gptcontainer
         image: gcr.io/PROJECT_ID/IMAGE:TAG
         ports:
         - containerPort: 80
-        env:
-        - name: OPENAI_API
-          valueFrom:
-            secretKeyRef:
-              name: openai-secret
-              key: API_KEY
-
 
 ---
 apiVersion: v1
@@ -33,7 +26,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: chatgpt-pod
+    app: gpt-pod
   ports:
   - port: 80 # Service IP Port
     targetPort: 80 # Container Port

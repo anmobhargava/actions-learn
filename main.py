@@ -1,63 +1,32 @@
 #!/bin/python3
-
+from transformers import pipeline
 from fastapi import FastAPI
-from openai import OpenAI
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 import uvicorn
-import os
 
-# Read OpenAI API key from Kubernetes secret env variable
-api_key = os.environ["OPENAI_API"]
+generator = pipeline('text-generation', model='gpt2')
+app = FastAPI(
+    title="Fast API App for LLM Model",
+    description = "A Text Generator App",
+    version='1.0'
+)
 
-# Initialize OpenAI client
-client = OpenAI(api_key=api_key)
-
-# Create FastAPI app
-app = FastAPI()
-
-# Request body schema
 class Body(BaseModel):
     text: str
 
-# Root endpoint
-@app.get("/")
-def welcome():
-    return {"message": "Welcome to ChatGPT AI Application V2"}
 
-# Home endpoint
-@app.get("/home")
-def home():
-    return {"message": "welcome home"}
+@app.get('/')
+def index():
+    return HTMLResponse("<h1>Welcome to LLMOps Course with a GPT2 model V1</h1>")
 
-# Dummy test endpoint
-@app.post("/dummy")
-def demo_function(data: dict):
-    return {"message": data}
 
-# GPT response endpoint
-@app.post("/response")
-def generate(body: Body):
+@app.post('/generate')
+def predict(body: Body):
+    results = generator(body.text, max_length=200, num_return_sequences=1)
+    return results[0]['generated_text']
 
-    prompt = body.text
+if __name__== "__main__":
+    uvicorn.run(app, host="0.0.0.0",port=80)
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a helpful AI assistant."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-    )
-
-    answer = response.choices[0].message.content
-
-    return {"response": answer}
-
-# Run FastAPI app
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=80)
+    # FROM --platform=linux/amd64 python:3.10

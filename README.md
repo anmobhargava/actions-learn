@@ -1,38 +1,15 @@
 # About the Repo
-This repo is part of the LLMOps course by Manifold AI Learning,
-Course link - https://www.manifoldailearning.in/courses/LLMOps-with-ChatGPT-Deploy-on-Production-65cb265ae4b086660d2836ae
-
-Reach the Instructor at - https://www.linkedin.com/in/nachiketh-murthy/
-
-For any support reach out to : support@manifoldailearning.in
-
-# Help on FAST API
-
-```
-pip install "fastapi[all]"
-
-uvicorn main:app --reload
-```
-
-# Test with Postman
-
-URL - http://127.0.0.1:80/response
-(POST)
-
-```json
-{
-  "text": "Who is the hero of the story"
-}
-
-```
 
 # Docker Commands
 
 ```
-docker build -t chatgpt-project1 .
-docker run -d -p 8080:80 chatgpt-project1
-docker tag chatgpt-project1 yourusername/chatgpt-project1
-docker push yourusername/chatgpt-project1
+docker buildx build --platform=linux/amd64 -t manifoldailearning/gpt-project:v1 .
+# test locally
+# Test with CI CD
+docker push manifoldailearning/gpt-project:v1
+
+docker run -d -p 8080:80 manifoldailearning/gpt-project:v1
+docker run -p 8080:80 manifoldailearning/gpt-project:v1
 ```
 
 # Kubernetes Code
@@ -44,6 +21,8 @@ kubectl create secret generic openai-secret --from-literal=API_KEY=<api-key>
 # Important Code for Docker
 
 ```
-docker buildx build --platform=linux/amd64 -t yourusername/chatgpt-project:v3 .
-docker push yourusername/chatgpt-project:v3
+docker buildx build --platform=linux/amd64 -t manifoldailearning/gpt-project:v1 .
+docker push yourusername/gpt-project:v1
+
+docker run -d -p 8001:80 manifoldailearning/gpt-project:v1
 ```
